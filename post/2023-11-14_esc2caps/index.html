@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>map Caps-Lock to ESC/Ctrl combo on wayland - (λ)da.de</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Marc Seibert" /><meta name="description" content=" Before switching from X11 to Wayland, I used several methods to map Caps Lock to Ctrl and Escape. On wayland there are several ways on doing this. If you only need this functionality you can use cap2esc. On debian just do:
+1 apt-get install interception-caps2esc and create /etc/udevmon.yaml or /etc/interception/udevmon.d/caps2esc.yaml with the following content:
+1 2 3 4 - JOB: &amp;#34;intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE&amp;#34; DEVICE: EVENTS: EV_KEY: [KEY_CAPSLOCK, KEY_ESC] xkb_options have to be defined in sway/config
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.110.0 with theme even" />
+
+
+<link rel="canonical" href="https://lambdada.de/post/2023-11-14_esc2caps/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.be27fb1e475a0f6fdc5012d2831d7555f5c5671c943d202db96e251648541966.css" rel="stylesheet">
+<link rel="stylesheet" href="nocdn/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="map Caps-Lock to ESC/Ctrl combo on wayland" />
+<meta property="og:description" content="
+Before switching from X11 to Wayland, I used several methods to map Caps Lock to Ctrl and Escape.
+On wayland there are several ways on doing this. If you only need this functionality you can use cap2esc.
+On debian just do:
+
+
+
+1
+
+
+apt-get install interception-caps2esc
+
+
+
+and create /etc/udevmon.yaml or /etc/interception/udevmon.d/caps2esc.yaml with the following content:
+
+
+
+1
+2
+3
+4
+
+
+- JOB: &#34;intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE&#34;
+  DEVICE:
+    EVENTS:
+      EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+
+
+
+xkb_options have to be defined in sway/config" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lambdada.de/post/2023-11-14_esc2caps/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-11-14T19:21:54+01:00" />
+<meta property="article:modified_time" content="2024-02-28T14:43:57+00:00" />
+<meta itemprop="name" content="map Caps-Lock to ESC/Ctrl combo on wayland">
+<meta itemprop="description" content="
+Before switching from X11 to Wayland, I used several methods to map Caps Lock to Ctrl and Escape.
+On wayland there are several ways on doing this. If you only need this functionality you can use cap2esc.
+On debian just do:
+
+
+
+1
+
+
+apt-get install interception-caps2esc
+
+
+
+and create /etc/udevmon.yaml or /etc/interception/udevmon.d/caps2esc.yaml with the following content:
+
+
+
+1
+2
+3
+4
+
+
+- JOB: &#34;intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE&#34;
+  DEVICE:
+    EVENTS:
+      EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+
+
+
+xkb_options have to be defined in sway/config"><meta itemprop="datePublished" content="2023-11-14T19:21:54+01:00" />
+<meta itemprop="dateModified" content="2024-02-28T14:43:57+00:00" />
+<meta itemprop="wordCount" content="156">
+<meta itemprop="keywords" content="wayland," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="map Caps-Lock to ESC/Ctrl combo on wayland"/>
+<meta name="twitter:description" content="
+Before switching from X11 to Wayland, I used several methods to map Caps Lock to Ctrl and Escape.
+On wayland there are several ways on doing this. If you only need this functionality you can use cap2esc.
+On debian just do:
+
+
+
+1
+
+
+apt-get install interception-caps2esc
+
+
+
+and create /etc/udevmon.yaml or /etc/interception/udevmon.d/caps2esc.yaml with the following content:
+
+
+
+1
+2
+3
+4
+
+
+- JOB: &#34;intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE&#34;
+  DEVICE:
+    EVENTS:
+      EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+
+
+
+xkb_options have to be defined in sway/config"/>
+
+<!--[if lte IE 9]>
+  <script src="nocdn/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="nocdn/html5shiv.min.js"></script>
+  <script src="nocdn/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">(λ)da.de</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">/blog</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">/archive</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">#tags</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">/about</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">(λ)da.de</a>
+
+</div>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">/blog</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">/archive</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">#tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">/about</a>
+      </li>
+  </ul>
+</nav>
+
+
+
+<div style="clear:both;"></div>
+<div class="tagline-navbar">
+        
+        
+</div>
+
+
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">map Caps-Lock to ESC/Ctrl combo on wayland</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> Nov 14, 2023 19:21 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p>
+Before switching from X11 to Wayland, I used several methods to map Caps Lock to Ctrl and Escape.
+On wayland there are several ways on doing this. If you only need this functionality you can use <a href="https://gitlab.com/interception/linux/plugins/caps2esc">cap2esc</a>.
+On debian just do:</p>
+<div class="src src-bash">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt-get install interception-caps2esc</span></span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>and create /etc/udevmon.yaml or /etc/interception/udevmon.d/caps2esc.yaml with the following content:</p>
+<div class="src src-yaml">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl">- <span class="nt">JOB</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">DEVICE</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">EVENTS</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">EV_KEY</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="l">KEY_CAPSLOCK, KEY_ESC]</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>xkb_options have to be defined in sway/config</p>
+<div class="src src-bash">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">  input <span class="s2">&#34;1:1:AT_Translated_Set_2_keyboard&#34;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	  xkb_layout de
+</span></span><span class="line"><span class="cl">  <span class="c1">#xkb_variant intl </span>
+</span></span><span class="line"><span class="cl">  xkb_options caps:ctrl_modifier,grp:sclk_toggle
+</span></span><span class="line"><span class="cl">  <span class="c1">#xkb_numlock enabled # enable numlock when logging in</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">input <span class="s2">&#34;6127:24814:Lenovo_TrackPoint_Keyboard_II&#34;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	  xkb_layout us
+</span></span><span class="line"><span class="cl">  xkb_variant intl 
+</span></span><span class="line"><span class="cl">  xkb_options caps:ctrl_modifier,grp:sclk_toggle
+</span></span><span class="line"><span class="cl">  <span class="c1">#xkb_numlock enabled # enable numlock when logging in</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<p>There are several other ways.
+A fully controlled software based keyboard programming solution like QMK would be <a href="https://github.com/kmonad/kmonad">Kmonad</a> for example.
+And there are similar ones besides that.</p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Marc Seibert</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        Feb 28, 2024 14:43
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/wayland/">wayland</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/gitea_actions_hugo/">
+            <span class="next-text nav-default">publishing with gitea and hugo</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <script src="nocdn/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="nocdn/jquery.fancybox.min.js"></script>
+<link rel="stylesheet" href="nocdn/jquery.fancybox.min.css" />
+<div class="social-links">
+  <a href="https://lambdada.de/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by  the magic of <a class="hexo-link" href="https://www.gnu.org/software/emacs/">Emacs</a> & <a class="hexo-link" href="https://git-scm.com/">Gitea Actions</a> & <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division"></span>
+  
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2023 - 
+    2024
+    by <span>Marc Seibert</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="nocdn/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="nocdn/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="nocdn/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

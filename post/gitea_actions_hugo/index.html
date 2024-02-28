@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>publishing with gitea and hugo - (λ)da.de</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Marc Seibert" /><meta name="description" content=" How I usually publish static websites:
+I am using Hugo for building static websites. Markdown is org-mode most of the time. Pushing to a Gitea-managed Git repository. Generating and rsyncing the blog automatically with Gitea-Actions CI-Pipeline. &amp;#34;git commit -am &amp;#39;update&amp;#39; &amp;amp;&amp;amp; git push&amp;#34; is all I need. To use the follwing build.yaml in gitea:
+setup secrets for SSHKEY, target and REPO in your gitea project register a ci runner with the lable &amp;#34;prod&amp;#34; or adjust both for your needs 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 name: Build and deploy my hugo static website run-name: ${{ gitea.actor }} is building and deploying the hugo based static page on: push: branches: - master jobs: deploy-prod: runs-on: prod steps: - run: echo &amp;#34;The job was automatically triggered by a ${{ gitea.event_name }} event.&amp;#34; - run: echo &amp;#34;The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}.&amp;#34; - name: Check out repository code uses: actions/checkout@v3 with: submodules: &amp;#39;false&amp;#39; github-server-url: ${{ REPO }} - name: Install apt packages run: apt update &amp;amp;&amp;amp; apt install -y jq rsync - name: mkdir run: mkdir -p ${{ gitea.workspace }}/bin - name: Get Hugo version v0.120.4 (Nov 2023) run: | wget -P /tmp/hugo/ &amp;#34;https://github.com/gohugoio/hugo/releases/download/v0.120.4/hugo_extended_0.120.4_linux-amd64.tar.gz&amp;#34; echo &amp;#34;Downloaded Hugo&amp;#34; - name: Unpack Hugo run: tar -xf /tmp/hugo/* -C ${{ gitea.workspace }}/bin - name: Build the static webpage run: ${{ gitea.workspace }}/bin/hugo --minify - name: Test static page run: ${{ gitea.workspace }}/bin/test_static_page.sh - name: Create private key run: | echo &amp;#34;${{ secrets.SSHKEY }}&amp;#34; &amp;gt; /tmp/sshkey chmod 600 /tmp/sshkey - name: rsync public directory run: | echo &amp;#34;${{ secrets.TARGET }}&amp;#34; rsync -avz --delete -e &amp;#34;ssh -i /tmp/sshkey -o StrictHostKeyChecking=no&amp;#34; ${{ gitea.workspace }}/public/ ${{ secrets.TARGET }} - run: echo &amp;#34;This job&amp;#39;s status is ${{ job.status }}.&amp;#34; " />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.110.0 with theme even" />
+
+
+<link rel="canonical" href="https://lambdada.de/post/gitea_actions_hugo/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.be27fb1e475a0f6fdc5012d2831d7555f5c5671c943d202db96e251648541966.css" rel="stylesheet">
+<link rel="stylesheet" href="nocdn/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="publishing with gitea and hugo" />
+<meta property="og:description" content="
+How I usually publish static websites:
+
+I am using Hugo for building static websites. Markdown is org-mode most of the time.
+Pushing to a Gitea-managed Git repository.
+Generating and rsyncing the blog automatically with Gitea-Actions CI-Pipeline.
+
+&#34;git commit -am &#39;update&#39; &amp;&amp; git push&#34; is all I need.
+
+
+To use the follwing build.yaml in gitea:
+
+setup secrets for SSHKEY, target and REPO in your gitea project
+register a ci runner with the lable &#34;prod&#34;
+or adjust both for your needs
+
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+
+
+name: Build and deploy my hugo static website
+run-name: ${{ gitea.actor }} is building and deploying the hugo based static page
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy-prod:
+    runs-on: prod
+    steps:
+      - run: echo &#34;The job was automatically triggered by a ${{ gitea.event_name }} event.&#34;
+      - run: echo &#34;The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}.&#34;
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          submodules: &#39;false&#39;
+          github-server-url: ${{ REPO }}
+      - name: Install apt packages
+        run: apt update &amp;&amp; apt install -y jq rsync
+      - name: mkdir
+        run: mkdir -p ${{ gitea.workspace }}/bin
+      - name: Get Hugo version v0.120.4 (Nov 2023)
+        run: |
+          wget -P /tmp/hugo/ &#34;https://github.com/gohugoio/hugo/releases/download/v0.120.4/hugo_extended_0.120.4_linux-amd64.tar.gz&#34;
+          echo &#34;Downloaded Hugo&#34;          
+      - name: Unpack Hugo
+        run: tar -xf /tmp/hugo/* -C ${{ gitea.workspace }}/bin
+      - name: Build the static webpage
+        run: ${{ gitea.workspace }}/bin/hugo --minify
+      - name: Test static page
+        run: ${{ gitea.workspace }}/bin/test_static_page.sh
+      - name: Create private key
+        run: |
+          echo &#34;${{ secrets.SSHKEY }}&#34; &gt; /tmp/sshkey
+          chmod 600 /tmp/sshkey          
+      - name: rsync public directory
+        run: |
+          echo &#34;${{ secrets.TARGET }}&#34;
+          rsync -avz --delete -e &#34;ssh -i /tmp/sshkey -o StrictHostKeyChecking=no&#34; ${{ gitea.workspace }}/public/ ${{ secrets.TARGET }}          
+      - run: echo &#34;This job&#39;s status is ${{ job.status }}.&#34;
+
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lambdada.de/post/gitea_actions_hugo/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-11-13T00:00:00+01:00" />
+<meta property="article:modified_time" content="2024-02-28T14:43:57+00:00" />
+<meta itemprop="name" content="publishing with gitea and hugo">
+<meta itemprop="description" content="
+How I usually publish static websites:
+
+I am using Hugo for building static websites. Markdown is org-mode most of the time.
+Pushing to a Gitea-managed Git repository.
+Generating and rsyncing the blog automatically with Gitea-Actions CI-Pipeline.
+
+&#34;git commit -am &#39;update&#39; &amp;&amp; git push&#34; is all I need.
+
+
+To use the follwing build.yaml in gitea:
+
+setup secrets for SSHKEY, target and REPO in your gitea project
+register a ci runner with the lable &#34;prod&#34;
+or adjust both for your needs
+
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+
+
+name: Build and deploy my hugo static website
+run-name: ${{ gitea.actor }} is building and deploying the hugo based static page
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy-prod:
+    runs-on: prod
+    steps:
+      - run: echo &#34;The job was automatically triggered by a ${{ gitea.event_name }} event.&#34;
+      - run: echo &#34;The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}.&#34;
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          submodules: &#39;false&#39;
+          github-server-url: ${{ REPO }}
+      - name: Install apt packages
+        run: apt update &amp;&amp; apt install -y jq rsync
+      - name: mkdir
+        run: mkdir -p ${{ gitea.workspace }}/bin
+      - name: Get Hugo version v0.120.4 (Nov 2023)
+        run: |
+          wget -P /tmp/hugo/ &#34;https://github.com/gohugoio/hugo/releases/download/v0.120.4/hugo_extended_0.120.4_linux-amd64.tar.gz&#34;
+          echo &#34;Downloaded Hugo&#34;          
+      - name: Unpack Hugo
+        run: tar -xf /tmp/hugo/* -C ${{ gitea.workspace }}/bin
+      - name: Build the static webpage
+        run: ${{ gitea.workspace }}/bin/hugo --minify
+      - name: Test static page
+        run: ${{ gitea.workspace }}/bin/test_static_page.sh
+      - name: Create private key
+        run: |
+          echo &#34;${{ secrets.SSHKEY }}&#34; &gt; /tmp/sshkey
+          chmod 600 /tmp/sshkey          
+      - name: rsync public directory
+        run: |
+          echo &#34;${{ secrets.TARGET }}&#34;
+          rsync -avz --delete -e &#34;ssh -i /tmp/sshkey -o StrictHostKeyChecking=no&#34; ${{ gitea.workspace }}/public/ ${{ secrets.TARGET }}          
+      - run: echo &#34;This job&#39;s status is ${{ job.status }}.&#34;
+
+
+"><meta itemprop="datePublished" content="2023-11-13T00:00:00+01:00" />
+<meta itemprop="dateModified" content="2024-02-28T14:43:57+00:00" />
+<meta itemprop="wordCount" content="322">
+<meta itemprop="keywords" content="gitea,,git,,hugo,,org-mode,,emacs," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="publishing with gitea and hugo"/>
+<meta name="twitter:description" content="
+How I usually publish static websites:
+
+I am using Hugo for building static websites. Markdown is org-mode most of the time.
+Pushing to a Gitea-managed Git repository.
+Generating and rsyncing the blog automatically with Gitea-Actions CI-Pipeline.
+
+&#34;git commit -am &#39;update&#39; &amp;&amp; git push&#34; is all I need.
+
+
+To use the follwing build.yaml in gitea:
+
+setup secrets for SSHKEY, target and REPO in your gitea project
+register a ci runner with the lable &#34;prod&#34;
+or adjust both for your needs
+
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+
+
+name: Build and deploy my hugo static website
+run-name: ${{ gitea.actor }} is building and deploying the hugo based static page
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy-prod:
+    runs-on: prod
+    steps:
+      - run: echo &#34;The job was automatically triggered by a ${{ gitea.event_name }} event.&#34;
+      - run: echo &#34;The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}.&#34;
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          submodules: &#39;false&#39;
+          github-server-url: ${{ REPO }}
+      - name: Install apt packages
+        run: apt update &amp;&amp; apt install -y jq rsync
+      - name: mkdir
+        run: mkdir -p ${{ gitea.workspace }}/bin
+      - name: Get Hugo version v0.120.4 (Nov 2023)
+        run: |
+          wget -P /tmp/hugo/ &#34;https://github.com/gohugoio/hugo/releases/download/v0.120.4/hugo_extended_0.120.4_linux-amd64.tar.gz&#34;
+          echo &#34;Downloaded Hugo&#34;          
+      - name: Unpack Hugo
+        run: tar -xf /tmp/hugo/* -C ${{ gitea.workspace }}/bin
+      - name: Build the static webpage
+        run: ${{ gitea.workspace }}/bin/hugo --minify
+      - name: Test static page
+        run: ${{ gitea.workspace }}/bin/test_static_page.sh
+      - name: Create private key
+        run: |
+          echo &#34;${{ secrets.SSHKEY }}&#34; &gt; /tmp/sshkey
+          chmod 600 /tmp/sshkey          
+      - name: rsync public directory
+        run: |
+          echo &#34;${{ secrets.TARGET }}&#34;
+          rsync -avz --delete -e &#34;ssh -i /tmp/sshkey -o StrictHostKeyChecking=no&#34; ${{ gitea.workspace }}/public/ ${{ secrets.TARGET }}          
+      - run: echo &#34;This job&#39;s status is ${{ job.status }}.&#34;
+
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="nocdn/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="nocdn/html5shiv.min.js"></script>
+  <script src="nocdn/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">(λ)da.de</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">/blog</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">/archive</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">#tags</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">/about</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">(λ)da.de</a>
+
+</div>
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">/blog</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">/archive</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">#tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">/about</a>
+      </li>
+  </ul>
+</nav>
+
+
+
+<div style="clear:both;"></div>
+<div class="tagline-navbar">
+        
+        
+</div>
+
+
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">publishing with gitea and hugo</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> Nov 13, 2023 00:00 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p>
+How I usually publish static websites:</p>
+<ul>
+<li>I am using <a href="https://gohugo.io/">Hugo</a> for building static websites. Markdown is org-mode most of the time.</li>
+<li>Pushing to a <a href="https://about.gitea.com/">Gitea-managed</a> Git repository.</li>
+<li>Generating and rsyncing the blog automatically with Gitea-Actions CI-Pipeline.</li>
+</ul>
+<p>&#34;git commit -am &#39;update&#39; &amp;&amp; git push&#34; is all I need.
+<br />
+
+To use the follwing build.yaml in gitea:</p>
+<ul>
+<li>setup secrets for SSHKEY, target and REPO in your gitea project</li>
+<li>register a ci runner with the lable &#34;prod&#34;</li>
+<li>or adjust both for your needs</li>
+</ul>
+<div class="src src-yaml">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Build and deploy my hugo static website</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">run-name</span><span class="p">:</span><span class="w"> </span><span class="l">${{ gitea.actor }} is building and deploying the hugo based static page</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">master</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">deploy-prod</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">prod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">echo &#34;The job was automatically triggered by a ${{ gitea.event_name }} event.&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">echo &#34;The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}.&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Check out repository code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">submodules</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;false&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">github-server-url</span><span class="p">:</span><span class="w"> </span><span class="l">${{ REPO }}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Install apt packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">apt update &amp;&amp; apt install -y jq rsync</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mkdir</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">mkdir -p ${{ gitea.workspace }}/bin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Get Hugo version v0.120.4 (Nov 2023)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          wget -P /tmp/hugo/ &#34;https://github.com/gohugoio/hugo/releases/download/v0.120.4/hugo_extended_0.120.4_linux-amd64.tar.gz&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sd">          echo &#34;Downloaded Hugo&#34;</span><span class="w">          
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Unpack Hugo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">tar -xf /tmp/hugo/* -C ${{ gitea.workspace }}/bin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Build the static webpage</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">${{ gitea.workspace }}/bin/hugo --minify</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Test static page</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">${{ gitea.workspace }}/bin/test_static_page.sh</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Create private key</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          echo &#34;${{ secrets.SSHKEY }}&#34; &gt; /tmp/sshkey
+</span></span></span><span class="line"><span class="cl"><span class="sd">          chmod 600 /tmp/sshkey</span><span class="w">          
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rsync public directory</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          echo &#34;${{ secrets.TARGET }}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="sd">          rsync -avz --delete -e &#34;ssh -i /tmp/sshkey -o StrictHostKeyChecking=no&#34; ${{ gitea.workspace }}/public/ ${{ secrets.TARGET }}</span><span class="w">          
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">echo &#34;This job&#39;s status is ${{ job.status }}.&#34;</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Marc Seibert</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        Feb 28, 2024 14:43
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/gitea/">gitea,</a>
+          <a href="/tags/git/">git,</a>
+          <a href="/tags/hugo/">hugo,</a>
+          <a href="/tags/org-mode/">org-mode,</a>
+          <a href="/tags/emacs/">emacs</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/2023-11-14_esc2caps/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">map Caps-Lock to ESC/Ctrl combo on wayland</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/init/">
+            <span class="next-text nav-default">init</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <script src="nocdn/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="nocdn/jquery.fancybox.min.js"></script>
+<link rel="stylesheet" href="nocdn/jquery.fancybox.min.css" />
+<div class="social-links">
+  <a href="https://lambdada.de/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by  the magic of <a class="hexo-link" href="https://www.gnu.org/software/emacs/">Emacs</a> & <a class="hexo-link" href="https://git-scm.com/">Gitea Actions</a> & <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division"></span>
+  
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2023 - 
+    2024
+    by <span>Marc Seibert</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="nocdn/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="nocdn/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="nocdn/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml-stylesheet type="text/xsl" href="https://lambdada.de/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://lambdada.de/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/post/2023-11-14_esc2caps/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/post/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/wayland/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/emacs/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/git/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/gitea/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/hugo/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/tags/org-mode/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/post/gitea_actions_hugo/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/post/init/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/about/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/categories/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://lambdada.de/contact/</loc>
+    <lastmod>2024-02-28T14:43:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>

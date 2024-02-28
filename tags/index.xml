@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on (λ)da.de</title>
+    <link>https://lambdada.de/tags/</link>
+    <description>Recent content in Tags on (λ)da.de</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 14 Nov 2023 19:21:54 +0100</lastBuildDate><atom:link href="https://lambdada.de/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>wayland</title>
+      <link>https://lambdada.de/tags/wayland/</link>
+      <pubDate>Tue, 14 Nov 2023 19:21:54 +0100</pubDate>
+      
+      <guid>https://lambdada.de/tags/wayland/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>emacs</title>
+      <link>https://lambdada.de/tags/emacs/</link>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0100</pubDate>
+      
+      <guid>https://lambdada.de/tags/emacs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>git,</title>
+      <link>https://lambdada.de/tags/git/</link>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0100</pubDate>
+      
+      <guid>https://lambdada.de/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gitea,</title>
+      <link>https://lambdada.de/tags/gitea/</link>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0100</pubDate>
+      
+      <guid>https://lambdada.de/tags/gitea/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hugo,</title>
+      <link>https://lambdada.de/tags/hugo/</link>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0100</pubDate>
+      
+      <guid>https://lambdada.de/tags/hugo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>org-mode,</title>
+      <link>https://lambdada.de/tags/org-mode/</link>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0100</pubDate>
+      
+      <guid>https://lambdada.de/tags/org-mode/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
